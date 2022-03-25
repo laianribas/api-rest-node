@@ -25,7 +25,7 @@ connection
     .sync({ force: true })
     .then(
         app.listen(port, () => {
-            console.log('listening on port ' + port)
+            console.log('listening on port' + port)
         })
     )
     .catch((err) => {
