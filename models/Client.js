@@ -18,6 +18,9 @@ const Client = connection.define('Client', {
     birth_date: {
         type: DataTypes.DATE,
         allowNull: false
+    },
+    active: {
+        type: DataTypes.BOOLEAN
     }
 })
 
