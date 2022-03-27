@@ -28,7 +28,8 @@ app.use('/address', addressRoutes)
 app.use('/client', clientRoutes)
 
 connection
-    .sync()
+    .sync({ force: true })
+    // .sync()
     .then(
         app.listen(port, () => {
             console.log('listening on port ' + port)

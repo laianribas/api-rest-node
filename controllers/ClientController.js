@@ -1,8 +1,10 @@
+import Address from '../models/Address.js'
 import Client from '../models/Client.js'
 
 export default class ClientController {
     static async createClient(req, res) {
         const { firstname, lastname, cpf, birthdate } = req.body
+        const { number, street, district, city, state, country, zipcode } = req.body
         if (!firstname) {
             return res
                 .status(422)
@@ -29,22 +31,89 @@ export default class ClientController {
                 message: 'Cliente já cadastrado!'
             })
         }
-        const client = await Client.create({
-            first_name: firstname,
-            last_name: lastname,
-            cpf: cpf,
-            birth_date: birthdate,
-            active: true
-        })
+        if (!number) {
+            return res
+                .status(422)
+                .json({ message: 'O número do endereço deve ser preenchido!' })
+        }
+        if (!street) {
+            return res
+                .status(422)
+                .json({ message: 'A rua do endereço deve ser preenchida!' })
+        }
+        if (!district) {
+            return res
+                .status(422)
+                .json({ message: 'O bairro do endereço deve ser preenchido!' })
+        }
+        if (!city) {
+            return res
+                .status(422)
+                .json({ message: 'A cidade do endereço deve ser preenchida!' })
+        }
+        if (!state) {
+            return res
+                .status(422)
+                .json({ message: 'O estado do endereço deve ser preenchido!' })
+        }
+        if (!country) {
+            return res
+                .status(422)
+                .json({ message: 'O país do endereço deve ser preenchido!' })
+        }
+        if (!zipcode) {
+            return res
+                .status(422)
+                .json({ message: 'O CEP do endereço deve ser preenchido!' })
+        }
         try {
+            const address = (await Address.findOne({
+                    where: {
+                        number,
+                        street,
+                        district,
+                        city,
+                        state,
+                        country,
+                        zipcode
+                    }
+                })) ?
+                await Address.findOne({
+                    where: {
+                        number,
+                        street,
+                        district,
+                        city,
+                        state,
+                        country,
+                        zipcode
+                    }
+                }) :
+                await Address.create({
+                    number,
+                    street,
+                    district,
+                    city,
+                    state,
+                    country,
+                    zipcode
+                })
+            const client = await Client.create({
+                first_name: firstname,
+                last_name: lastname,
+                cpf: cpf,
+                birth_date: birthdate,
+                active: true
+            })
+            await client.setAddresses(address, { through: { started: false } })
             res.status(200).json({ client })
         } catch (error) {
-            res.status(500).json({ error })
+            res.status(500).json({ error: 'merda' + error })
         }
     }
     static async getAllClient(req, res) {
         try {
-            const clients = await Client.findAll()
+            const clients = await Client.findAll({ include: Address })
             res.status(200).json({ clients })
         } catch (error) {
             res.status(500).json({ error })

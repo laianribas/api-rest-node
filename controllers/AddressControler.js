@@ -1,8 +1,10 @@
 import Address from '../models/Address.js'
+import Client from '../models/Client.js'
 
 export default class AddressControler {
     static async createAddress(req, res) {
         const { number, street, district, city, state, country, zipcode } = req.body
+        const { id } = req.body
         if (!number) {
             return res
                 .status(422)
@@ -38,24 +40,46 @@ export default class AddressControler {
                 .status(422)
                 .json({ message: 'O CEP do endereço deve ser preenchido!' })
         }
-
-        const AddressExists = await Address.findOne({
-            where: { number, street, district, city, country, zipcode }
-        })
-        if (AddressExists) {
-            return res.status(422).json({ message: 'Endereço já está cadastrado!' })
+        if (!id) {
+            return res
+                .status(422)
+                .json({ message: 'O cliente precisa ser informado!' })
         }
         try {
-            const addressData = await Address.create({
-                number,
-                street,
-                district,
-                city,
-                state,
-                country,
-                zipcode
-            })
-            res.status(200).json(addressData)
+            const address = (await Address.findOne({
+                    where: {
+                        number,
+                        street,
+                        district,
+                        city,
+                        state,
+                        country,
+                        zipcode
+                    }
+                })) ?
+                await Address.findOne({
+                    where: {
+                        number,
+                        street,
+                        district,
+                        city,
+                        state,
+                        country,
+                        zipcode
+                    }
+                }) :
+                await Address.create({
+                    number,
+                    street,
+                    district,
+                    city,
+                    state,
+                    country,
+                    zipcode
+                })
+            const client = await Client.findOne({ where: { id: id } })
+            await client.addAddresses(address, { through: { started: false } })
+            res.status(200).json(address)
         } catch (error) {
             return res.status(500).json({ error: error })
         }
