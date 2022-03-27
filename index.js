@@ -14,6 +14,7 @@ import Section from './models/Section.js'
 
 import addressRoutes from './routes/addressRoutes.js'
 import clientRoutes from './routes/clientRoutes.js'
+import departmentRoutes from './routes/departmentRoutes.js'
 
 const port = 3000
 
@@ -26,10 +27,11 @@ app.use(express.json())
 //ROUTES
 app.use('/address', addressRoutes)
 app.use('/client', clientRoutes)
+app.use('/department', departmentRoutes)
 
 connection
-    .sync({ force: true })
-    // .sync()
+// .sync({ force: true })
+    .sync()
     .then(
         app.listen(port, () => {
             console.log('listening on port ' + port)

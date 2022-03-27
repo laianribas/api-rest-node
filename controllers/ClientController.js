@@ -5,22 +5,22 @@ export default class ClientController {
     static async createClient(req, res) {
         const { firstname, lastname, cpf, birthdate } = req.body
         const { number, street, district, city, state, country, zipcode } = req.body
-        if (!firstname) {
+        if (!firstname || firstname == '') {
             return res
                 .status(422)
                 .json({ message: 'O nome do cliente deve ser preenchido!' })
         }
-        if (!lastname) {
+        if (!lastname || lastname == '') {
             return res
                 .status(422)
                 .json({ message: 'O sobrenome do cliente deve ser preenchido!' })
         }
-        if (!cpf) {
+        if (!cpf || cpf == '') {
             return res
                 .status(422)
                 .json({ message: 'O CPF do cliente deve ser preenchido!' })
         }
-        if (!birthdate) {
+        if (!birthdate || birthdate == '') {
             return res.status(422).json({
                 message: 'A data de nascimento do cliente deve ser preenchida!'
             })
@@ -31,37 +31,37 @@ export default class ClientController {
                 message: 'Cliente já cadastrado!'
             })
         }
-        if (!number) {
+        if (!number || number == '') {
             return res
                 .status(422)
                 .json({ message: 'O número do endereço deve ser preenchido!' })
         }
-        if (!street) {
+        if (!street || street == '') {
             return res
                 .status(422)
                 .json({ message: 'A rua do endereço deve ser preenchida!' })
         }
-        if (!district) {
+        if (!district || district == '') {
             return res
                 .status(422)
                 .json({ message: 'O bairro do endereço deve ser preenchido!' })
         }
-        if (!city) {
+        if (!city || city == '') {
             return res
                 .status(422)
                 .json({ message: 'A cidade do endereço deve ser preenchida!' })
         }
-        if (!state) {
+        if (!state || state == '') {
             return res
                 .status(422)
                 .json({ message: 'O estado do endereço deve ser preenchido!' })
         }
-        if (!country) {
+        if (!country || country == '') {
             return res
                 .status(422)
                 .json({ message: 'O país do endereço deve ser preenchido!' })
         }
-        if (!zipcode) {
+        if (!zipcode || zipcode == '') {
             return res
                 .status(422)
                 .json({ message: 'O CEP do endereço deve ser preenchido!' })
@@ -123,9 +123,9 @@ export default class ClientController {
         const { id } = req.params
         try {
             const client = await Client.findOne({ where: { id: id } })
-            if (!client) {
-                return res.status(422).json({ message: 'Endereço não encontrado' })
-            }
+                // if (!client) {
+                //     return res.status(422).json({ message: 'Endereço não encontrado' })
+                // }
             res.status(200).json({ client })
         } catch (error) {
             res.status(500).json({ error: error })

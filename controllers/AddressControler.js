@@ -5,42 +5,42 @@ export default class AddressControler {
     static async createAddress(req, res) {
         const { number, street, district, city, state, country, zipcode } = req.body
         const { id } = req.body
-        if (!number) {
+        if (!number || number === '') {
             return res
                 .status(422)
                 .json({ message: 'O número do endereço deve ser preenchido!' })
         }
-        if (!street) {
+        if (!street || street === '') {
             return res
                 .status(422)
                 .json({ message: 'A rua do endereço deve ser preenchida!' })
         }
-        if (!district) {
+        if (!district || district === '') {
             return res
                 .status(422)
                 .json({ message: 'O bairro do endereço deve ser preenchido!' })
         }
-        if (!city) {
+        if (!city || city === '') {
             return res
                 .status(422)
                 .json({ message: 'A cidade do endereço deve ser preenchida!' })
         }
-        if (!state) {
+        if (!state || state === '') {
             return res
                 .status(422)
                 .json({ message: 'O estado do endereço deve ser preenchido!' })
         }
-        if (!country) {
+        if (!country || country === '') {
             return res
                 .status(422)
                 .json({ message: 'O país do endereço deve ser preenchido!' })
         }
-        if (!zipcode) {
+        if (!zipcode || zipcode === '') {
             return res
                 .status(422)
                 .json({ message: 'O CEP do endereço deve ser preenchido!' })
         }
-        if (!id) {
+        if (!id || id === '') {
             return res
                 .status(422)
                 .json({ message: 'O cliente precisa ser informado!' })
