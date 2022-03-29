@@ -87,8 +87,8 @@ export default class AddressControler {
 
     static async getAllAddress(req, res) {
         try {
-            const adresses = await Address.findAll()
-            res.status(200).json({ adresses })
+            const addresses = await Address.findAll()
+            res.status(200).json({ addresses })
         } catch (error) {
             return res.status(500).json({ error: error })
         }

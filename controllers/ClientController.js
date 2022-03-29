@@ -1,5 +1,8 @@
 import Address from '../models/Address.js'
 import Client from '../models/Client.js'
+import xml from 'xml'
+import { json2xml } from 'xml-js'
+import js2xmlparser from 'js2xmlparser'
 
 export default class ClientController {
     static async createClient(req, res) {
@@ -108,12 +111,13 @@ export default class ClientController {
             await client.setAddresses(address, { through: { started: false } })
             res.status(200).json({ client })
         } catch (error) {
-            res.status(500).json({ error: 'merda' + error })
+            res.status(500).json({ error: error })
         }
     }
     static async getAllClient(req, res) {
         try {
-            const clients = await Client.findAll({ include: Address })
+            const clients = await Client.findAll({ include: Address }, { raw: true })
+                //console.log(js2xmlparser.parse('Clients', clients))
             res.status(200).json({ clients })
         } catch (error) {
             res.status(500).json({ error })
@@ -121,14 +125,26 @@ export default class ClientController {
     }
     static async getClient(req, res) {
         const { id } = req.params
-        try {
-            const client = await Client.findOne({ where: { id: id } })
-                // if (!client) {
-                //     return res.status(422).json({ message: 'Endereço não encontrado' })
-                // }
-            res.status(200).json({ client })
-        } catch (error) {
-            res.status(500).json({ error: error })
+        console.log(req.headers['response-type'])
+        if (
+            req.headers['response-type'] === 'json' ||
+            req.headers['response-type'] === undefined
+        ) {
+            try {
+                const client = await Client.findOne({ where: { id: id } })
+                res.status(200).json({ client })
+            } catch (error) {
+                res.status(500).json({ error: error })
+            }
+        } else if (req.headers['response-type'] === 'xml') {
+            try {
+                const client = await Client.findOne({
+                    where: { id: id },
+                    raw: true
+                })
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('Client', client))
+            } catch (error) {}
         }
     }
     static async updateClient(req, res) {
