@@ -116,8 +116,8 @@ export default class ClientController {
     }
     static async getAllClient(req, res) {
         try {
-            const clients = await Client.findAll({ include: Address }, { raw: true })
-                //console.log(js2xmlparser.parse('Clients', clients))
+            const clients = await Client.findAll({ include: Address, raw: true })
+            console.log(js2xmlparser.parse('Clients', clients))
             res.status(200).json({ clients })
         } catch (error) {
             res.status(500).json({ error })
@@ -125,7 +125,6 @@ export default class ClientController {
     }
     static async getClient(req, res) {
         const { id } = req.params
-        console.log(req.headers['response-type'])
         if (
             req.headers['response-type'] === 'json' ||
             req.headers['response-type'] === undefined

@@ -10,6 +10,9 @@ const Employee = connection.define('employee', {
     last_name: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    active: {
+        type: DataTypes.BOOLEAN
     }
 })
 
