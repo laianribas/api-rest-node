@@ -16,6 +16,9 @@ import addressRoutes from './routes/addressRoutes.js'
 import clientRoutes from './routes/clientRoutes.js'
 import departmentRoutes from './routes/departmentRoutes.js'
 import employeeRoutes from './routes/employeeRoutes.js'
+import productRoutes from './routes/productRoutes.js'
+import saleRoutes from './routes/saleRoutes.js'
+import sectionRoutes from './routes/sectionRoutes.js'
 
 const port = 3000
 
@@ -30,10 +33,13 @@ app.use('/address', addressRoutes)
 app.use('/client', clientRoutes)
 app.use('/department', departmentRoutes)
 app.use('/employee', employeeRoutes)
+app.use('/product', productRoutes)
+app.use('/sale', saleRoutes)
+app.use('/section', sectionRoutes)
 
 connection
-    .sync({ force: true })
-    // .sync()
+// .sync({ force: true })
+    .sync()
     .then(
         app.listen(port, () => {
             console.log('listening on port ' + port)

@@ -46,7 +46,7 @@ export default class EmployeeController {
                 )
             }
         }
-        const department = Department.findOne({ where: { id: departmentid } })
+        const department = await Department.findOne({ where: { id: departmentid } })
         if (!department) {
             if (
                 req.headers['response-type'] === 'json' ||
@@ -189,5 +189,34 @@ export default class EmployeeController {
             }
         }
     }
-    static async deleteEmployee(req, res) {}
+    static async deleteEmployee(req, res) {
+        const { id } = req.body
+        const employee = {
+            active: false
+        }
+        try {
+            const employeeDeleted = await Employee.update(employee, {
+                where: { id: id }
+            })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(200).json({ employeeDeleted })
+            } else if (req.headers['response-type'] == 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('Employee', employeeDeleted))
+            }
+        } catch (error) {
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(500).json({ error })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('error', error))
+            }
+        }
+    }
 }
