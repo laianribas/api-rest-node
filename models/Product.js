@@ -16,6 +16,14 @@ const Product = connection.define('product', {
     technical_information: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    quantity: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    active: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false
     }
 })
 

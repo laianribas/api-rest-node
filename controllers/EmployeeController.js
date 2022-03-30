@@ -6,19 +6,55 @@ export default class EmployeeController {
     static async createEmployee(req, res) {
         const { firstname, lastname, departmentid } = req.body
         if (!firstname || firstname == '') {
-            return res
-                .status(422)
-                .json({ message: 'O nome do funcionário deve ser preenchido!' })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'O nome do funcionário deve ser preenchido!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'O nome do funcionário deve ser preenchido!'
+                    })
+                )
+            }
         }
         if (!lastname || lastname == '') {
-            return res
-                .status(422)
-                .json({ message: 'O sobrenome do funcionário deve ser preenchido!' })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'O sobrenome do funcionário deve ser preenchido!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'O sobrenome do funcionário deve ser preenchido!'
+                    })
+                )
+            }
         }
         if (!departmentid || departmentid == '') {
-            return res
-                .status(422)
-                .json({ message: 'O departmentid do funcionário deve ser preenchido!' })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'O departamento do funcionário deve ser preenchido!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'O departamento do funcionário deve ser preenchido!'
+                    })
+                )
+            }
         }
         const employeeExists = await Employee.findOne({
             where: {

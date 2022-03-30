@@ -1,7 +1,5 @@
 import Address from '../models/Address.js'
 import Client from '../models/Client.js'
-import xml from 'xml'
-import { json2xml } from 'xml-js'
 import js2xmlparser from 'js2xmlparser'
 
 export default class ClientController {
@@ -9,65 +7,209 @@ export default class ClientController {
         const { firstname, lastname, cpf, birthdate } = req.body
         const { number, street, district, city, state, country, zipcode } = req.body
         if (!firstname || firstname == '') {
-            return res
-                .status(422)
-                .json({ message: 'O nome do cliente deve ser preenchido!' })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'O nome do cliente deve ser preenchido!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'O nome do cliente deve ser preenchido!'
+                    })
+                )
+            }
         }
         if (!lastname || lastname == '') {
-            return res
-                .status(422)
-                .json({ message: 'O sobrenome do cliente deve ser preenchido!' })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'O sobrenome do cliente deve ser preenchido!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'O sobrenome do cliente deve ser preenchido!'
+                    })
+                )
+            }
         }
         if (!cpf || cpf == '') {
-            return res
-                .status(422)
-                .json({ message: 'O CPF do cliente deve ser preenchido!' })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'O CPF do cliente deve ser preenchido!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'O CPF do cliente deve ser preenchido!'
+                    })
+                )
+            }
         }
         if (!birthdate || birthdate == '') {
-            return res.status(422).json({
-                message: 'A data de nascimento do cliente deve ser preenchida!'
-            })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'A data de nascimento do cliente deve ser preenchida!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'A data de nascimento do cliente deve ser preenchida!'
+                    })
+                )
+            }
         }
         const clientExists = await Client.findOne({ where: { cpf: cpf } })
         if (clientExists) {
-            return res.status(422).json({
-                message: 'Cliente já cadastrado!'
-            })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'Cliente já cadastrado!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'Cliente já cadastrado!'
+                    })
+                )
+            }
         }
         if (!number || number == '') {
-            return res
-                .status(422)
-                .json({ message: 'O número do endereço deve ser preenchido!' })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'O número do endereço deve ser preenchido!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'O número do endereço deve ser preenchido!'
+                    })
+                )
+            }
         }
         if (!street || street == '') {
-            return res
-                .status(422)
-                .json({ message: 'A rua do endereço deve ser preenchida!' })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'A rua do endereço deve ser preenchida!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'A rua do endereço deve ser preenchida!'
+                    })
+                )
+            }
         }
         if (!district || district == '') {
-            return res
-                .status(422)
-                .json({ message: 'O bairro do endereço deve ser preenchido!' })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'O bairro do endereço deve ser preenchido!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'O bairro do endereço deve ser preenchido!'
+                    })
+                )
+            }
         }
         if (!city || city == '') {
-            return res
-                .status(422)
-                .json({ message: 'A cidade do endereço deve ser preenchida!' })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'A cidade do endereço deve ser preenchida!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'A cidade do endereço deve ser preenchida!'
+                    })
+                )
+            }
         }
         if (!state || state == '') {
-            return res
-                .status(422)
-                .json({ message: 'O estado do endereço deve ser preenchido!' })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'O estado do endereço deve ser preenchido!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'O estado do endereço deve ser preenchido!'
+                    })
+                )
+            }
         }
         if (!country || country == '') {
-            return res
-                .status(422)
-                .json({ message: 'O país do endereço deve ser preenchido!' })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'O país do endereço deve ser preenchido!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'O país do endereço deve ser preenchido!'
+                    })
+                )
+            }
         }
         if (!zipcode || zipcode == '') {
-            return res
-                .status(422)
-                .json({ message: 'O CEP do endereço deve ser preenchido!' })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'O CEP do endereço deve ser preenchido!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'O CEP do endereço deve ser preenchido!'
+                    })
+                )
+            }
         }
         try {
             const address = (await Address.findOne({
@@ -109,41 +251,74 @@ export default class ClientController {
                 active: true
             })
             await client.setAddresses(address, { through: { started: false } })
-            res.status(200).json({ client })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(200).json({ client })
+            } else if (req.headers['response-type'] == 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('client', client))
+            }
         } catch (error) {
-            res.status(500).json({ error: error })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(500).json({ error })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('error', error))
+            }
         }
     }
     static async getAllClient(req, res) {
         try {
             const clients = await Client.findAll({ include: Address, raw: true })
-            console.log(js2xmlparser.parse('Clients', clients))
-            res.status(200).json({ clients })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(200).json({ clients })
+            } else if (req.headers['response-type'] == 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('clients', clients))
+            }
         } catch (error) {
-            res.status(500).json({ error })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(500).json({ error })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('error', error))
+            }
         }
     }
     static async getClient(req, res) {
         const { id } = req.params
-        if (
-            req.headers['response-type'] === 'json' ||
-            req.headers['response-type'] === undefined
-        ) {
-            try {
-                const client = await Client.findOne({ where: { id: id } })
+        try {
+            const client = await Client.findOne({ where: { id: id } })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
                 res.status(200).json({ client })
-            } catch (error) {
-                res.status(500).json({ error: error })
-            }
-        } else if (req.headers['response-type'] === 'xml') {
-            try {
-                const client = await Client.findOne({
-                    where: { id: id },
-                    raw: true
-                })
+            } else if (req.headers['response-type'] == 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('Client', client))
-            } catch (error) {}
+                res.send(js2xmlparser.parse('client', client))
+            }
+        } catch (error) {
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(500).json({ error })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('error', error))
+            }
         }
     }
     static async updateClient(req, res) {
@@ -157,9 +332,25 @@ export default class ClientController {
                 birth_date: req.body.birthdate
             }
             const clientUpdated = await Client.update(client, { where: { id: id } })
-            res.status(200).json({ clientUpdated })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(200).json({ clientUpdated })
+            } else if (req.headers['response-type'] == 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('clientUpdated', clientUpdated))
+            }
         } catch (error) {
-            res.status(500).json({ error })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(500).json({ error })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('error', error))
+            }
         }
     }
 
@@ -170,9 +361,25 @@ export default class ClientController {
         }
         try {
             const clientDeleted = await Client.update(client, { where: { id: id } })
-            res.status(200).json({ clientDeleted })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(200).json({ clientDeleted })
+            } else if (req.headers['response-type'] == 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('clientDeleted', clientDeleted))
+            }
         } catch (error) {
-            res.status(500).json({ error })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(500).json({ error })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('error', error))
+            }
         }
     }
 }

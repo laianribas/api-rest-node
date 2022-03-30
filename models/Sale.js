@@ -9,6 +9,10 @@ const Sale = connection.define('sale', {
     installment: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    total_value: {
+        type: DataTypes.FLOAT,
+        allowNull: false
     }
 })
 

@@ -1,51 +1,102 @@
 import Department from '../models/Department.js'
+import js2xmlparser from 'js2xmlparser'
 
 export default class DepartmentController {
     static async createDepartment(req, res) {
         const { departmentname } = req.body
         if (!departmentname) {
-            return res
-                .status(422)
-                .json({ message: 'O nome do departamento deve ser preenchido!' })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'O nome do departamento deve ser preenchido!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'O nome do departamento deve ser preenchido!'
+                    })
+                )
+            }
         }
         try {
             const department = await Department.findOrCreate({
                 where: { department_name: departmentname }
             })
-            res.status(200).json({ department })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(200).json({ department })
+            } else if (req.headers['response-type'] == 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('department', department))
+            }
         } catch (error) {
-            return res.status(500).json({ error: error })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(500).json({ error })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('error', error))
+            }
         }
     }
     static async getAllDepartments(req, res) {
         try {
             const departments = await Department.findAll()
-            res.status(200).json({ departments })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(200).json({ departments })
+            } else if (req.headers['response-type'] == 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('Employee', departments))
+            }
         } catch (error) {
-            return res.status(500).json({ error })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(500).json({ error })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('error', error))
+            }
         }
     }
     static async getDepartment(req, res) {
         const { id } = req.params
         try {
             const department = await Department.findOne({ where: { id: id } })
-            res.status(200).json({ department })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(200).json({ department })
+            } else if (req.headers['response-type'] == 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('Employee', department))
+            }
         } catch (error) {
-            return res.status(500).json({ error })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(500).json({ error })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('error', error))
+            }
         }
     }
     static async updateDepartment(req, res) {
         const { id, departmentname } = req.body
-        if (!id) {
-            return res
-                .status(422)
-                .json({ message: 'O departamento deve ser informado!' })
-        }
-        if (departmentname == '') {
-            return res
-                .status(422)
-                .json({ message: 'O nome do departamento deve ser preenchido!' })
-        }
         try {
             const department = {
                 department_name: departmentname
@@ -53,23 +104,67 @@ export default class DepartmentController {
             const departmentUpdated = await Department.update(department, {
                 where: { id: id }
             })
-            res.status(200).json({ departmentUpdated })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(200).json({ departmentUpdated })
+            } else if (req.headers['response-type'] == 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('Employee', departmentUpdated))
+            }
         } catch (error) {
-            return res.status(500).json({ error })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(500).json({ error })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('error', error))
+            }
         }
     }
     static async deleteDepartment(req, res) {
         const { id } = req.body
         if (!id) {
-            return res
-                .status(422)
-                .json({ message: 'O departamento deve ser informado!' })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'O departamento deve ser informado!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'O departamento deve ser informado!'
+                    })
+                )
+            }
         }
         try {
             const departmentDeleted = await Department.destroy({ where: { id: id } })
-            res.status(200).json({ departmentDeleted })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(200).json({ departmentDeleted })
+            } else if (req.headers['response-type'] == 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('Employee', departmentDeleted))
+            }
         } catch (error) {
-            return res.status(500).json({ error })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(500).json({ error })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('error', error))
+            }
         }
     }
 }

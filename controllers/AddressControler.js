@@ -1,49 +1,145 @@
 import Address from '../models/Address.js'
 import Client from '../models/Client.js'
-
+import js2xmlparser from 'js2xmlparser'
 export default class AddressControler {
     static async createAddress(req, res) {
         const { number, street, district, city, state, country, zipcode } = req.body
         const { id } = req.body
-        if (!number || number === '') {
-            return res
-                .status(422)
-                .json({ message: 'O número do endereço deve ser preenchido!' })
+        if (!number || number == '') {
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'O número do endereço deve ser preenchido!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'O número do endereço deve ser preenchido!'
+                    })
+                )
+            }
         }
-        if (!street || street === '') {
-            return res
-                .status(422)
-                .json({ message: 'A rua do endereço deve ser preenchida!' })
+        if (!street || street == '') {
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'A rua do endereço deve ser preenchida!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'A rua do endereço deve ser preenchida!'
+                    })
+                )
+            }
         }
-        if (!district || district === '') {
-            return res
-                .status(422)
-                .json({ message: 'O bairro do endereço deve ser preenchido!' })
+        if (!district || district == '') {
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'O bairro do endereço deve ser preenchido!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'O bairro do endereço deve ser preenchido!'
+                    })
+                )
+            }
         }
-        if (!city || city === '') {
-            return res
-                .status(422)
-                .json({ message: 'A cidade do endereço deve ser preenchida!' })
+        if (!city || city == '') {
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'A cidade do endereço deve ser preenchida!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'A cidade do endereço deve ser preenchida!'
+                    })
+                )
+            }
         }
-        if (!state || state === '') {
-            return res
-                .status(422)
-                .json({ message: 'O estado do endereço deve ser preenchido!' })
+        if (!state || state == '') {
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'O estado do endereço deve ser preenchido!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'O estado do endereço deve ser preenchido!'
+                    })
+                )
+            }
         }
-        if (!country || country === '') {
-            return res
-                .status(422)
-                .json({ message: 'O país do endereço deve ser preenchido!' })
+        if (!country || country == '') {
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'O país do endereço deve ser preenchido!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'O país do endereço deve ser preenchido!'
+                    })
+                )
+            }
         }
-        if (!zipcode || zipcode === '') {
-            return res
-                .status(422)
-                .json({ message: 'O CEP do endereço deve ser preenchido!' })
+        if (!zipcode || zipcode == '') {
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'O CEP do endereço deve ser preenchido!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'O CEP do endereço deve ser preenchido!'
+                    })
+                )
+            }
         }
         if (!id || id === '') {
-            return res
-                .status(422)
-                .json({ message: 'O cliente precisa ser informado!' })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'O cliente precisa ser informado!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'O cliente precisa ser informado!'
+                    })
+                )
+            }
         }
         try {
             const address = (await Address.findOne({
@@ -79,18 +175,50 @@ export default class AddressControler {
                 })
             const client = await Client.findOne({ where: { id: id } })
             await client.addAddresses(address, { through: { started: false } })
-            res.status(200).json(address)
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(200).json({ address })
+            } else if (req.headers['response-type'] == 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('address', address))
+            }
         } catch (error) {
-            return res.status(500).json({ error: error })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(500).json({ error })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('error', error))
+            }
         }
     }
 
     static async getAllAddress(req, res) {
         try {
             const addresses = await Address.findAll()
-            res.status(200).json({ addresses })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(200).json({ addresses })
+            } else if (req.headers['response-type'] == 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('addresses', addresses))
+            }
         } catch (error) {
-            return res.status(500).json({ error: error })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(500).json({ error })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('error', error))
+            }
         }
     }
     static async getAddress(req, res) {
@@ -100,9 +228,25 @@ export default class AddressControler {
             if (!address) {
                 return res.status(422).json({ message: 'Endereço não encontrado' })
             }
-            res.status(200).json({ address })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(200).json({ address })
+            } else if (req.headers['response-type'] == 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('address', address))
+            }
         } catch (error) {
-            res.status(500).json({ error: error })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(500).json({ error })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('error', error))
+            }
         }
     }
     static async updateAddress(req, res) {
@@ -121,18 +265,50 @@ export default class AddressControler {
             const addressUpdated = await Address.update(address, {
                 where: { id: id }
             })
-            res.status(200).json({ addressUpdated })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(200).json({ addressUpdated })
+            } else if (req.headers['response-type'] == 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('addressUpdated', addressUpdated))
+            }
         } catch (error) {
-            return res.status(500).json({ error: error })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(500).json({ error })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('error', error))
+            }
         }
     }
     static async deleteAddress(req, res) {
         const { id } = req.body
         try {
             const addressDeleted = await Address.destroy({ where: { id: id } })
-            res.status(200).json({ addressDeleted })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(200).json({ addressDeleted })
+            } else if (req.headers['response-type'] == 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('addressDeleted', addressDeleted))
+            }
         } catch (error) {
-            res.status(500).json({ error: error })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(500).json({ error })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('error', error))
+            }
         }
     }
 }
