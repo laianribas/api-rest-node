@@ -100,52 +100,83 @@ export default class ProductController {
                 )
             }
         }
-        try {
-            const sale = await Sale.create({
-                payment_method: paymentmethod,
-                installment,
-                total_value: totalvalue,
-                ClientId: clientid,
-                employeeId: employeeid
-            })
-            let totalValue = 0
-            products.map(async(product) => {
-                const productSold = await Product.findOne({
-                    where: { id: product.id }
+        async function allProductsExists() {
+            for (let i = 0; i < products.length; i++) {
+                const product = await Product.findOne({
+                    where: { id: products[i].id },
+                    raw: true
                 })
-
-                await sale.setProducts(productSold, { through: { started: false } })
-                if (productSold) {
-                    totalValue += productSold.price * product.quantity
+                if (!product) {
+                    return false
                 }
-                const quantity = {
-                    product_quantity: product.quantity
-                }
-                await SaleHasProduct.update(quantity, {
-                    where: { productId: product.id, saleId: sale.id }
-                })
-                await sale.update({
-                    total_value: totalValue
-                }, { where: { saleId: sale.id } })
-            })
-            if (
-                req.headers['response-type'] === 'json' ||
-                req.headers['response-type'] === undefined
-            ) {
-                res.status(200).json({ sale })
-            } else if (req.headers['response-type'] == 'xml') {
-                res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('sale', sale))
             }
-        } catch (error) {
+            return true
+        }
+        console.log(await allProductsExists())
+        if (!(await allProductsExists())) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(500).json({ error })
+                return res.status(422).json({
+                    message: 'Existe um produto não cadastrado!'
+                })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('error', error))
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'Existe um produto não cadastrado!'
+                    })
+                )
+            }
+        } else {
+            try {
+                const sale = await Sale.create({
+                    payment_method: paymentmethod,
+                    installment,
+                    total_value: totalvalue,
+                    ClientId: clientid,
+                    employeeId: employeeid
+                })
+                let totalValue = 0
+                products.map(async(product) => {
+                    const productSold = await Product.findOne({
+                        where: { id: product.id }
+                    })
+
+                    await sale.setProducts(productSold, { through: { started: false } })
+                    if (productSold) {
+                        totalValue += productSold.price * product.quantity
+                    }
+                    const quantity = {
+                        product_quantity: product.quantity
+                    }
+                    await SaleHasProduct.update(quantity, {
+                        where: { productId: product.id, saleId: sale.id }
+                    })
+                    await sale.update({
+                        total_value: totalValue
+                    }, { where: { saleId: sale.id } })
+                })
+                if (
+                    req.headers['response-type'] === 'json' ||
+                    req.headers['response-type'] === undefined
+                ) {
+                    res.status(200).json({ sale })
+                } else if (req.headers['response-type'] == 'xml') {
+                    res.header('Content-Type', 'application/xml')
+                    res.send(js2xmlparser.parse('sale', sale))
+                }
+            } catch (error) {
+                if (
+                    req.headers['response-type'] === 'json' ||
+                    req.headers['response-type'] === undefined
+                ) {
+                    res.status(500).json({ error })
+                } else if (req.headers['response-type'] === 'xml') {
+                    res.header('Content-Type', 'application/xml')
+                    res.send(js2xmlparser.parse('error', error))
+                }
             }
         }
     }
