@@ -1,6 +1,6 @@
+import js2xmlparser from 'js2xmlparser'
 import Department from '../models/Department.js'
 import Employee from '../models/Employee.js'
-import js2xmlparser from 'js2xmlparser'
 
 export default class EmployeeController {
     static async createEmployee(req, res) {

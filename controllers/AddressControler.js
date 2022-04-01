@@ -1,6 +1,6 @@
+import js2xmlparser from 'js2xmlparser'
 import Address from '../models/Address.js'
 import Client from '../models/Client.js'
-import js2xmlparser from 'js2xmlparser'
 export default class AddressControler {
     static async createAddress(req, res) {
         const { number, street, district, city, state, country, zipcode } = req.body

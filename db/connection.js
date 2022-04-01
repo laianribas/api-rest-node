@@ -1,5 +1,5 @@
-import { Sequelize } from 'sequelize'
 import 'dotenv/config'
+import { Sequelize } from 'sequelize'
 
 const connection = new Sequelize(
     process.env.DB_NAME,

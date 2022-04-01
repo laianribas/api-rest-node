@@ -1,5 +1,5 @@
-import Department from '../models/Department.js'
 import js2xmlparser from 'js2xmlparser'
+import Department from '../models/Department.js'
 
 export default class DepartmentController {
     static async createDepartment(req, res) {

@@ -1,6 +1,6 @@
+import js2xmlparser from 'js2xmlparser'
 import Product from '../models/Product.js'
 import Section from '../models/Section.js'
-import js2xmlparser from 'js2xmlparser'
 
 export default class ProductController {
     static async createProduct(req, res) {

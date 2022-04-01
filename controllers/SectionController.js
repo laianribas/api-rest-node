@@ -1,5 +1,5 @@
-import Section from '../models/Section.js'
 import js2xmlparser from 'js2xmlparser'
+import Section from '../models/Section.js'
 export default class ProductController {
     static async createSection(req, res) {
         const { sectionname } = req.body

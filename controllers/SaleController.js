@@ -1,9 +1,9 @@
-import Sale from '../models/Sale.js'
 import js2xmlparser from 'js2xmlparser'
-import Product from '../models/Product.js'
-import SaleHasProduct from '../models/SaleHasProduct.js'
+import linkProductToSale from '../helpers/linkProductToSale.js'
 import Client from '../models/Client.js'
 import Employee from '../models/Employee.js'
+import Product from '../models/Product.js'
+import Sale from '../models/Sale.js'
 
 export default class ProductController {
     static async createSale(req, res) {
@@ -112,7 +112,7 @@ export default class ProductController {
             }
             return true
         }
-        console.log(await allProductsExists())
+        console.log(typeof(await allProductsExists()))
         if (!(await allProductsExists())) {
             if (
                 req.headers['response-type'] === 'json' ||
@@ -138,26 +138,7 @@ export default class ProductController {
                     ClientId: clientid,
                     employeeId: employeeid
                 })
-                let totalValue = 0
-                products.map(async(product) => {
-                    const productSold = await Product.findOne({
-                        where: { id: product.id }
-                    })
-
-                    await sale.setProducts(productSold, { through: { started: false } })
-                    if (productSold) {
-                        totalValue += productSold.price * product.quantity
-                    }
-                    const quantity = {
-                        product_quantity: product.quantity
-                    }
-                    await SaleHasProduct.update(quantity, {
-                        where: { productId: product.id, saleId: sale.id }
-                    })
-                    await sale.update({
-                        total_value: totalValue
-                    }, { where: { saleId: sale.id } })
-                })
+                await linkProductToSale(products, sale)
                 if (
                     req.headers['response-type'] === 'json' ||
                     req.headers['response-type'] === undefined
@@ -183,8 +164,8 @@ export default class ProductController {
     static async getAllSales(req, res) {
         try {
             const sales = await Sale.findAll({
-                include: [Client, Employee, Product]
-                    //raw: true
+                include: [Client, Employee, Product],
+                raw: true
             })
             if (
                 req.headers['response-type'] === 'json' ||
@@ -207,6 +188,73 @@ export default class ProductController {
             }
         }
     }
-    static async getSale(req, res) {}
-    static async updateSale(req, res) {}
+    static async getSale(req, res) {
+        const { id } = req.params
+        try {
+            const sale = await Sale.findOne({
+                where: { id: id },
+                include: [Client, Employee, Product],
+                raw: true
+            })
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(200).json({ sale })
+            } else if (req.headers['response-type'] == 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('sale', sale))
+            }
+        } catch (error) {
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(500).json({ error })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('error', error))
+            }
+        }
+    }
+    static async updateSale(req, res) {
+        const { id } = req.body
+        try {
+            const sale = {
+                payment_method: req.body.paymentmethod,
+                installment: req.body.installment,
+                ClientId: req.body.clientid,
+                employeeId: req.body.employeeid
+            }
+            const seila = await Sale.update(sale, { where: { id: id } })
+            const saleWasUpdated = await Sale.findOne({
+                where: { id: id },
+                include: [Client, Employee, Product]
+            })
+            if (req.body.products && req.body.products.length > 0) {
+                await saleWasUpdated.setProducts([])
+                await linkProductToSale(req.body.products, saleWasUpdated)
+            }
+
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(200).json({ seila })
+            } else if (req.headers['response-type'] == 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('saleUpdated', seila))
+            }
+        } catch (error) {
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                res.status(500).json({ error })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                res.send(js2xmlparser.parse('error', error))
+            }
+        }
+    }
 }

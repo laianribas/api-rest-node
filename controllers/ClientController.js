@@ -1,6 +1,6 @@
+import js2xmlparser from 'js2xmlparser'
 import Address from '../models/Address.js'
 import Client from '../models/Client.js'
-import js2xmlparser from 'js2xmlparser'
 import Sale from '../models/Sale.js'
 
 export default class ClientController {
