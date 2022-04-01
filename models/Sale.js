@@ -1,5 +1,7 @@
 import { DataTypes } from 'sequelize'
 import connection from '../db/connection.js'
+import Product from './Product.js'
+import SaleHasProduct from './SaleHasProduct.js'
 
 const Sale = connection.define('sale', {
     payment_method: {
@@ -15,5 +17,13 @@ const Sale = connection.define('sale', {
         allowNull: false
     }
 })
+
+Product.belongsToMany(Sale, { through: SaleHasProduct })
+Sale.belongsToMany(Product, { through: SaleHasProduct })
+
+Sale.hasMany(SaleHasProduct)
+SaleHasProduct.belongsTo(Sale)
+Product.hasMany(SaleHasProduct)
+SaleHasProduct.belongsTo(Product)
 
 export default Sale

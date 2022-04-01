@@ -1,6 +1,7 @@
 import Address from '../models/Address.js'
 import Client from '../models/Client.js'
 import js2xmlparser from 'js2xmlparser'
+import Sale from '../models/Sale.js'
 
 export default class ClientController {
     static async createClient(req, res) {
@@ -274,7 +275,10 @@ export default class ClientController {
     }
     static async getAllClient(req, res) {
         try {
-            const clients = await Client.findAll({ include: Address, raw: true })
+            const clients = await Client.findAll({
+                include: [Address, Sale],
+                raw: true
+            })
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
