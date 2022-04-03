@@ -3,7 +3,7 @@ import DepartmentController from '../controllers/DepartmentController.js'
 
 const departmentRoutes = Router()
 
-departmentRoutes.post('/create', DepartmentController.createDepartment)
+departmentRoutes.post('/', DepartmentController.createDepartment)
 departmentRoutes.get('/', DepartmentController.getAllDepartments)
 departmentRoutes.get('/:id', DepartmentController.getDepartment)
 departmentRoutes.patch('/', DepartmentController.updateDepartment)

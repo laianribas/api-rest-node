@@ -3,7 +3,7 @@ import ProductController from '../controllers/ProductController.js'
 
 const productRoutes = Router()
 
-productRoutes.post('/create', ProductController.createProduct)
+productRoutes.post('/', ProductController.createProduct)
 productRoutes.get('/', ProductController.getAllProducts)
 productRoutes.get('/:id', ProductController.getProduct)
 productRoutes.patch('/', ProductController.updateProduct)

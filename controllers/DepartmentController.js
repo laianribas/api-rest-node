@@ -118,6 +118,24 @@ export default class DepartmentController {
     }
     static async updateDepartment(req, res) {
         const { id, departmentname } = req.body
+        const department = await Department.findOne({ where: { id: id } })
+        if (!department) {
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'Departamento não encontrado!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'Departamento não encontrado!'
+                    })
+                )
+            }
+        }
         try {
             const department = {
                 department_name: departmentname
@@ -150,19 +168,20 @@ export default class DepartmentController {
     }
     static async deleteDepartment(req, res) {
         const { id } = req.body
-        if (!id) {
+        const department = await Department.findOne({ where: { id: id } })
+        if (!department) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
                 return res.status(422).json({
-                    message: 'O departamento deve ser informado!'
+                    message: 'Departamento não encontrado!'
                 })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
                 return res.status(422).send(
                     js2xmlparser.parse('Error', {
-                        message: 'O departamento deve ser informado!'
+                        message: 'Departamento não encontrado!'
                     })
                 )
             }

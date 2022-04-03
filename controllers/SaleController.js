@@ -1,4 +1,5 @@
 import js2xmlparser from 'js2xmlparser'
+import allProductsExists from '../helpers/allProductsExists.js'
 import linkProductToSale from '../helpers/linkProductToSale.js'
 import Client from '../models/Client.js'
 import Employee from '../models/Employee.js'
@@ -66,6 +67,24 @@ export default class SaleController {
                 )
             }
         }
+        const client = await Client.findOne({ where: { id: clientid } })
+        if (!client) {
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'Cliente não encontrado!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'Cliente não encontrado!'
+                    })
+                )
+            }
+        }
         if (!employeeid || employeeid == '') {
             if (
                 req.headers['response-type'] === 'json' ||
@@ -79,6 +98,26 @@ export default class SaleController {
                 return res.status(422).send(
                     js2xmlparser.parse('Error', {
                         message: 'O funcionário deve ser informado!'
+                    })
+                )
+            }
+        }
+        const employee = await Employee.findOne({
+            where: { id: req.body.employeeid }
+        })
+        if (!employee) {
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'Funcionário não encontrado!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'Funcionário não encontrado!'
                     })
                 )
             }
@@ -100,19 +139,7 @@ export default class SaleController {
                 )
             }
         }
-        async function allProductsExists() {
-            for (let i = 0; i < products.length; i++) {
-                const product = await Product.findOne({
-                    where: { id: products[i].id },
-                    raw: true
-                })
-                if (!product) {
-                    return false
-                }
-            }
-            return true
-        }
-        if (!(await allProductsExists())) {
+        if (!(await allProductsExists(products))) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
@@ -235,6 +262,44 @@ export default class SaleController {
     }
     static async updateSale(req, res) {
         const { id } = req.body
+        const client = await Client.findOne({ where: { id: req.body.clientid } })
+        const employee = await Employee.findOne({
+            where: { id: req.body.employeeid }
+        })
+        if (!client) {
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'Cliente não encontrado!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'Cliente não encontrado!'
+                    })
+                )
+            }
+        }
+        if (!employee) {
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'Funcionário não encontrado!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'Funcionário não encontrado!'
+                    })
+                )
+            }
+        }
         try {
             const sale = {
                 payment_method: req.body.paymentmethod,
@@ -248,10 +313,27 @@ export default class SaleController {
                 include: [Client, Employee, Product]
             })
             if (req.body.products && req.body.products.length > 0) {
-                await saleWasUpdated.setProducts([])
-                await linkProductToSale(req.body.products, saleWasUpdated)
+                if (!(await allProductsExists(req.body.products))) {
+                    if (
+                        req.headers['response-type'] === 'json' ||
+                        req.headers['response-type'] === undefined
+                    ) {
+                        return res.status(422).json({
+                            message: 'Existe um produto não cadastrado!'
+                        })
+                    } else if (req.headers['response-type'] === 'xml') {
+                        res.header('Content-Type', 'application/xml')
+                        return res.status(422).send(
+                            js2xmlparser.parse('Error', {
+                                message: 'Existe um produto não cadastrado!'
+                            })
+                        )
+                    }
+                } else {
+                    await saleWasUpdated.setProducts([])
+                    await linkProductToSale(req.body.products, saleWasUpdated)
+                }
             }
-
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined

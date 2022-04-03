@@ -268,6 +268,46 @@ export default class ProductController {
             quantity,
             sectionid
         } = req.body
+        const sectionExists = await Section.findOne({ where: { id: sectionid } })
+        if (!sectionExists) {
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'Seção não cadastrada!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'Seção não cadastrada!'
+                    })
+                )
+            }
+        }
+        const product = await Product.findOne({
+            where: {
+                id: id
+            }
+        })
+        if (!product) {
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'Produto não encontrado!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'Produto não encontrado!'
+                    })
+                )
+            }
+        }
         try {
             const product = {
                 product_name: productname,
@@ -305,10 +345,32 @@ export default class ProductController {
     }
     static async deleteProduct(req, res) {
         const { id } = req.body
-        const product = {
-            active: false
+        const product = await Product.findOne({
+            where: {
+                id: id
+            }
+        })
+        if (!product) {
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'Produto não encontrado!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'Produto não encontrado!'
+                    })
+                )
+            }
         }
         try {
+            const product = {
+                active: false
+            }
             const productDeleted = await Product.update(product, {
                 where: { id: id }
             })

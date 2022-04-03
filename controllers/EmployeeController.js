@@ -99,7 +99,7 @@ export default class EmployeeController {
             }
         }
         try {
-            const employee = await Employee.create({
+            await Employee.create({
                 first_name: firstname,
                 last_name: lastname,
                 departmentId: departmentid,
@@ -214,6 +214,28 @@ export default class EmployeeController {
     }
     static async updateEmployee(req, res) {
         const { id } = req.body
+        const employee = await Employee.findOne({
+            where: {
+                id: id
+            }
+        })
+        if (!employee) {
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'Funcionário não encontrado!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'Funcionário não encontrado!'
+                    })
+                )
+            }
+        }
         try {
             const employee = {
                 first_name: req.body.firstname,
@@ -248,10 +270,32 @@ export default class EmployeeController {
     }
     static async deleteEmployee(req, res) {
         const { id } = req.body
-        const employee = {
-            active: false
+        const employee = await Employee.findOne({
+            where: {
+                id: id
+            }
+        })
+        if (!employee) {
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'Funcionário não encontrado!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'Funcionário não encontrado!'
+                    })
+                )
+            }
         }
         try {
+            const employee = {
+                active: false
+            }
             const employeeDeleted = await Employee.update(employee, {
                 where: { id: id }
             })

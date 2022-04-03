@@ -3,7 +3,7 @@ import AddressController from '../controllers/AddressController.js'
 
 const addressRoutes = Router()
 
-addressRoutes.post('/create', AddressController.createAddress)
+addressRoutes.post('/', AddressController.createAddress)
 addressRoutes.get('/', AddressController.getAllAddress)
 addressRoutes.get('/:id', AddressController.getAddress)
 addressRoutes.patch('/', AddressController.updateAddress)

@@ -124,6 +124,28 @@ export default class SectionController {
     }
     static async updateSection(req, res) {
         const { id } = req.body
+        const section = await Section.findOne({
+            where: {
+                id: id
+            }
+        })
+        if (!section) {
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'Seção não encontrada!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'Seção não encontrada!'
+                    })
+                )
+            }
+        }
         try {
             const section = {
                 section_name: req.body.sectionname
@@ -156,6 +178,28 @@ export default class SectionController {
     }
     static async deleteSection(req, res) {
         const { id } = req.body
+        const section = await Section.findOne({
+            where: {
+                id: id
+            }
+        })
+        if (!section) {
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'Seção não encontrada!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'Seção não encontrada!'
+                    })
+                )
+            }
+        }
         try {
             const sectionDeleted = await Section.destroy({ where: { id: id } })
             if (

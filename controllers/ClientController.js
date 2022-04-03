@@ -344,7 +344,24 @@ export default class ClientController {
     }
     static async updateClient(req, res) {
         const { id } = req.body
-
+        const client = await Client.findOne({ where: { id: id } })
+        if (!client) {
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'Cliente não encontrado!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'Cliente não encontrado!'
+                    })
+                )
+            }
+        }
         try {
             const client = {
                 first_name: req.body.firstname,
@@ -379,10 +396,28 @@ export default class ClientController {
 
     static async deleteClient(req, res) {
         const { id } = req.body
-        const client = {
-            active: false
+        const client = await Client.findOne({ where: { id: id } })
+        if (!client) {
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'Cliente não encontrado!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'Cliente não encontrado!'
+                    })
+                )
+            }
         }
         try {
+            const client = {
+                active: false
+            }
             const clientDeleted = await Client.update(client, { where: { id: id } })
             if (
                 req.headers['response-type'] === 'json' ||

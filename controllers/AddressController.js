@@ -267,7 +267,23 @@ export default class AddressController {
     static async updateAddress(req, res) {
         const { id } = req.body
         const addressExists = await Address.findOne({ where: { id: id } })
-        if (!addressExists) {}
+        if (!addressExists) {
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'Endereço não encontrado!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'Endereço não encontrado!'
+                    })
+                )
+            }
+        }
         try {
             const address = {
                 number: req.body.number,
@@ -306,6 +322,24 @@ export default class AddressController {
     }
     static async deleteAddress(req, res) {
         const { id } = req.body
+        const addressExists = await Address.findOne({ where: { id: id } })
+        if (!addressExists) {
+            if (
+                req.headers['response-type'] === 'json' ||
+                req.headers['response-type'] === undefined
+            ) {
+                return res.status(422).json({
+                    message: 'Endereço não encontrado!'
+                })
+            } else if (req.headers['response-type'] === 'xml') {
+                res.header('Content-Type', 'application/xml')
+                return res.status(422).send(
+                    js2xmlparser.parse('Error', {
+                        message: 'Endereço não encontrado!'
+                    })
+                )
+            }
+        }
         try {
             const addressDeleted = await Address.destroy({ where: { id: id } })
             if (
