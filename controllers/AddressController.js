@@ -1,7 +1,8 @@
 import js2xmlparser from 'js2xmlparser'
 import Address from '../models/Address.js'
 import Client from '../models/Client.js'
-export default class AddressControler {
+
+export default class AddressController {
     static async createAddress(req, res) {
         const { number, street, district, city, state, country, zipcode } = req.body
         const { id } = req.body
@@ -179,20 +180,20 @@ export default class AddressControler {
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(200).json({ address })
+                return res.status(200).json({ address })
             } else if (req.headers['response-type'] == 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('address', address))
+                return res.status(200).send(js2xmlparser.parse('address', address))
             }
         } catch (error) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(500).json({ error })
+                return res.status(500).json({ error })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('error', error))
+                return res.status(500).send(js2xmlparser.parse('error', error))
             }
         }
     }
@@ -204,20 +205,20 @@ export default class AddressControler {
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(200).json({ addresses })
+                return res.status(200).json({ addresses })
             } else if (req.headers['response-type'] == 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('addresses', addresses))
+                return res.status(200).send(js2xmlparser.parse('addresses', addresses))
             }
         } catch (error) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(500).json({ error })
+                return res.status(500).json({ error })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('error', error))
+                return res.status(500).send(js2xmlparser.parse('error', error))
             }
         }
     }
@@ -226,32 +227,47 @@ export default class AddressControler {
         try {
             const address = await Address.findOne({ where: { id: id } })
             if (!address) {
-                return res.status(422).json({ message: 'Endereço não encontrado' })
+                if (
+                    req.headers['response-type'] === 'json' ||
+                    req.headers['response-type'] === undefined
+                ) {
+                    return res.status(422).json({
+                        message: 'Endereço não encontrado!'
+                    })
+                } else if (req.headers['response-type'] === 'xml') {
+                    res.header('Content-Type', 'application/xml')
+                    return res.status(422).send(
+                        js2xmlparser.parse('Error', {
+                            message: 'Endereço não encontrado!'
+                        })
+                    )
+                }
             }
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(200).json({ address })
+                return res.status(200).json({ address })
             } else if (req.headers['response-type'] == 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('address', address))
+                return res.status(200).send(js2xmlparser.parse('address', address))
             }
         } catch (error) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(500).json({ error })
+                return res.status(500).json({ error })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('error', error))
+                return res.status(500).send(js2xmlparser.parse('error', error))
             }
         }
     }
     static async updateAddress(req, res) {
         const { id } = req.body
-
+        const addressExists = await Address.findOne({ where: { id: id } })
+        if (!addressExists) {}
         try {
             const address = {
                 number: req.body.number,
@@ -269,20 +285,22 @@ export default class AddressControler {
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(200).json({ addressUpdated })
+                return res.status(200).json({ addressUpdated })
             } else if (req.headers['response-type'] == 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('addressUpdated', addressUpdated))
+                return res
+                    .status(200)
+                    .send(js2xmlparser.parse('addressUpdated', addressUpdated))
             }
         } catch (error) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(500).json({ error })
+                return res.status(500).json({ error })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('error', error))
+                return res.status(500).send(js2xmlparser.parse('error', error))
             }
         }
     }
@@ -294,20 +312,22 @@ export default class AddressControler {
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(200).json({ addressDeleted })
+                return res.status(200).json({ addressDeleted })
             } else if (req.headers['response-type'] == 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('addressDeleted', addressDeleted))
+                return res
+                    .status(200)
+                    .send(js2xmlparser.parse('addressDeleted', addressDeleted))
             }
         } catch (error) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(500).json({ error })
+                return res.status(500).json({ error })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('error', error))
+                return res.status(500).send(js2xmlparser.parse('error', error))
             }
         }
     }

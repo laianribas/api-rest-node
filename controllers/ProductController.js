@@ -166,20 +166,20 @@ export default class ProductController {
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(200).json({ product })
+                return res.status(200).json({ product })
             } else if (req.headers['response-type'] == 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('Product', product))
+                return res.status(200).send(js2xmlparser.parse('Product', product))
             }
         } catch (error) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(500).json({ error })
+                return res.status(500).json({ error })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('error', error))
+                return res.status(500).send(js2xmlparser.parse('error', error))
             }
         }
     }
@@ -193,20 +193,20 @@ export default class ProductController {
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(200).json({ product })
+                return res.status(200).json({ product })
             } else if (req.headers['response-type'] == 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('Product', product))
+                return res.status(200).send(js2xmlparser.parse('Product', product))
             }
         } catch (error) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(500).json({ error })
+                return res.status(500).json({ error })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('error', error))
+                return res.status(500).send(js2xmlparser.parse('error', error))
             }
         }
     }
@@ -220,24 +220,41 @@ export default class ProductController {
                 include: Section,
                 raw: true
             })
+            if (!product) {
+                if (
+                    req.headers['response-type'] === 'json' ||
+                    req.headers['response-type'] === undefined
+                ) {
+                    return res.status(422).json({
+                        message: 'Produto não encontrado!'
+                    })
+                } else if (req.headers['response-type'] === 'xml') {
+                    res.header('Content-Type', 'application/xml')
+                    return res.status(422).send(
+                        js2xmlparser.parse('Error', {
+                            message: 'Produto não encontrado!'
+                        })
+                    )
+                }
+            }
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(200).json({ product })
+                return res.status(200).json({ product })
             } else if (req.headers['response-type'] == 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('product', product))
+                return res.status(200).send(js2xmlparser.parse('product', product))
             }
         } catch (error) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(500).json({ error })
+                return res.status(500).json({ error })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('error', error))
+                return res.status(500).send(js2xmlparser.parse('error', error))
             }
         }
     }
@@ -267,20 +284,22 @@ export default class ProductController {
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(200).json({ productUpdated })
+                return res.status(200).json({ productUpdated })
             } else if (req.headers['response-type'] == 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('Product', productUpdated))
+                return res
+                    .status(200)
+                    .send(js2xmlparser.parse('Product', productUpdated))
             }
         } catch (error) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(500).json({ error })
+                return res.status(500).json({ error })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('error', error))
+                return res.status(500).send(js2xmlparser.parse('error', error))
             }
         }
     }
@@ -297,20 +316,22 @@ export default class ProductController {
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(200).json({ productDeleted })
+                return res.status(200).json({ productDeleted })
             } else if (req.headers['response-type'] == 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('Product', productDeleted))
+                return res
+                    .status(200)
+                    .send(js2xmlparser.parse('Product', productDeleted))
             }
         } catch (error) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(500).json({ error })
+                return res.status(500).json({ error })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('error', error))
+                return res.status(500).send(js2xmlparser.parse('error', error))
             }
         }
     }

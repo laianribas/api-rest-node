@@ -118,20 +118,22 @@ export default class EmployeeController {
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(200).json({ employeeCreation })
+                return res.status(200).json({ employeeCreation })
             } else if (req.headers['response-type'] == 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('Employee', employeeCreation))
+                return res
+                    .status(200)
+                    .send(js2xmlparser.parse('Employee', employeeCreation))
             }
         } catch (error) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(500).json({ error })
+                return res.status(500).json({ error })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('error', error))
+                return res.status(500).send(js2xmlparser.parse('error', error))
             }
         }
     }
@@ -145,20 +147,20 @@ export default class EmployeeController {
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(200).json({ employees })
+                return res.status(200).json({ employees })
             } else if (req.headers['response-type'] == 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('Employees', employees))
+                return res.status(200).send(js2xmlparser.parse('Employees', employees))
             }
         } catch (error) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(500).json({ error })
+                return res.status(500).json({ error })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('error', error))
+                return res.status(500).send(js2xmlparser.parse('error', error))
             }
         }
     }
@@ -172,24 +174,41 @@ export default class EmployeeController {
                 include: Department,
                 raw: true
             })
+            if (!employee) {
+                if (
+                    req.headers['response-type'] === 'json' ||
+                    req.headers['response-type'] === undefined
+                ) {
+                    return res.status(422).json({
+                        message: 'Funcionário não encontrado!'
+                    })
+                } else if (req.headers['response-type'] === 'xml') {
+                    res.header('Content-Type', 'application/xml')
+                    return res.status(422).send(
+                        js2xmlparser.parse('Error', {
+                            message: 'Funcionário não encontrado!'
+                        })
+                    )
+                }
+            }
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(200).json({ employee })
+                return res.status(200).json({ employee })
             } else if (req.headers['response-type'] == 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('Employee', employee))
+                return res.status(200).send(js2xmlparser.parse('Employee', employee))
             }
         } catch (error) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(500).json({ error })
+                return res.status(500).json({ error })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('error', error))
+                return res.status(500).send(js2xmlparser.parse('error', error))
             }
         }
     }
@@ -208,20 +227,22 @@ export default class EmployeeController {
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(200).json({ employeeUpdated })
+                return res.status(200).json({ employeeUpdated })
             } else if (req.headers['response-type'] == 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('Employee', employeeUpdated))
+                return res
+                    .status(200)
+                    .send(js2xmlparser.parse('Employee', employeeUpdated))
             }
         } catch (error) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(500).json({ error })
+                return res.status(500).json({ error })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('error', error))
+                return res.status(500).send(js2xmlparser.parse('error', error))
             }
         }
     }
@@ -238,20 +259,22 @@ export default class EmployeeController {
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(200).json({ employeeDeleted })
+                return res.status(200).json({ employeeDeleted })
             } else if (req.headers['response-type'] == 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('Employee', employeeDeleted))
+                return res
+                    .status(200)
+                    .send(js2xmlparser.parse('Employee', employeeDeleted))
             }
         } catch (error) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(500).json({ error })
+                return res.status(500).json({ error })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('error', error))
+                return res.status(500).send(js2xmlparser.parse('error', error))
             }
         }
     }

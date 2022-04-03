@@ -29,20 +29,22 @@ export default class DepartmentController {
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(200).json({ department })
+                return res.status(200).json({ department })
             } else if (req.headers['response-type'] == 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('department', department))
+                return res
+                    .status(200)
+                    .send(js2xmlparser.parse('department', department))
             }
         } catch (error) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(500).json({ error })
+                return res.status(500).json({ error })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('error', error))
+                return res.status(500).send(js2xmlparser.parse('error', error))
             }
         }
     }
@@ -53,20 +55,20 @@ export default class DepartmentController {
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(200).json({ departments })
+                return res.status(200).json({ departments })
             } else if (req.headers['response-type'] == 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('Employee', departments))
+                return res.status(200).send(js2xmlparser.parse('Employee', departments))
             }
         } catch (error) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(500).json({ error })
+                return res.status(500).json({ error })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('error', error))
+                return res.status(500).send(js2xmlparser.parse('error', error))
             }
         }
     }
@@ -74,24 +76,43 @@ export default class DepartmentController {
         const { id } = req.params
         try {
             const department = await Department.findOne({ where: { id: id } })
+            if (!department) {
+                if (
+                    req.headers['response-type'] === 'json' ||
+                    req.headers['response-type'] === undefined
+                ) {
+                    return res.status(422).json({
+                        message: 'Departamento não encontrado!'
+                    })
+                } else if (req.headers['response-type'] === 'xml') {
+                    res.header('Content-Type', 'application/xml')
+                    return res.status(422).send(
+                        js2xmlparser.parse('Error', {
+                            message: 'Departamento não encontrado!'
+                        })
+                    )
+                }
+            }
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(200).json({ department })
+                return res.status(200).json({ department })
             } else if (req.headers['response-type'] == 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('Employee', department))
+                return res
+                    .status(200)
+                    .send(js2xmlparser.parse('Department', department))
             }
         } catch (error) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(500).json({ error })
+                return res.status(500).json({ error })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('error', error))
+                return res.status(500).send(js2xmlparser.parse('error', error))
             }
         }
     }
@@ -108,20 +129,22 @@ export default class DepartmentController {
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(200).json({ departmentUpdated })
+                return res.status(200).json({ departmentUpdated })
             } else if (req.headers['response-type'] == 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('Employee', departmentUpdated))
+                return res
+                    .status(200)
+                    .send(js2xmlparser.parse('Employee', departmentUpdated))
             }
         } catch (error) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(500).json({ error })
+                return res.status(500).json({ error })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('error', error))
+                return res.status(500).send(js2xmlparser.parse('error', error))
             }
         }
     }
@@ -150,20 +173,22 @@ export default class DepartmentController {
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(200).json({ departmentDeleted })
+                return res.status(200).json({ departmentDeleted })
             } else if (req.headers['response-type'] == 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('Employee', departmentDeleted))
+                return res
+                    .status(200)
+                    .send(js2xmlparser.parse('Employee', departmentDeleted))
             }
         } catch (error) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(500).json({ error })
+                return res.status(500).json({ error })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('error', error))
+                return res.status(500).send(js2xmlparser.parse('error', error))
             }
         }
     }

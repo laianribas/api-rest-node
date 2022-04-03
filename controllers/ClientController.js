@@ -256,20 +256,20 @@ export default class ClientController {
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(200).json({ client })
+                return res.status(200).json({ client })
             } else if (req.headers['response-type'] == 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('client', client))
+                return res.status(200).send(js2xmlparser.parse('client', client))
             }
         } catch (error) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(500).json({ error })
+                return res.status(500).json({ error })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('error', error))
+                return res.status(500).send(js2xmlparser.parse('error', error))
             }
         }
     }
@@ -283,20 +283,20 @@ export default class ClientController {
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(200).json({ clients })
+                return res.status(200).json({ clients })
             } else if (req.headers['response-type'] == 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('clients', clients))
+                return res.status(200).send(js2xmlparser.parse('clients', clients))
             }
         } catch (error) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(500).json({ error })
+                return res.status(500).json({ error })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('error', error))
+                return res.status(500).send(js2xmlparser.parse('error', error))
             }
         }
     }
@@ -304,24 +304,41 @@ export default class ClientController {
         const { id } = req.params
         try {
             const client = await Client.findOne({ where: { id: id } })
+            if (!client) {
+                if (
+                    req.headers['response-type'] === 'json' ||
+                    req.headers['response-type'] === undefined
+                ) {
+                    return res.status(422).json({
+                        message: 'Cliente não encontrado!'
+                    })
+                } else if (req.headers['response-type'] === 'xml') {
+                    res.header('Content-Type', 'application/xml')
+                    return res.status(422).send(
+                        js2xmlparser.parse('Error', {
+                            message: 'Cliente não encontrado!'
+                        })
+                    )
+                }
+            }
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(200).json({ client })
+                return res.status(200).json({ client })
             } else if (req.headers['response-type'] == 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('client', client))
+                return res.status(200).send(js2xmlparser.parse('client', client))
             }
         } catch (error) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(500).json({ error })
+                return res.status(500).json({ error })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('error', error))
+                return res.status(500).send(js2xmlparser.parse('error', error))
             }
         }
     }
@@ -340,20 +357,22 @@ export default class ClientController {
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(200).json({ clientUpdated })
+                return res.status(200).json({ clientUpdated })
             } else if (req.headers['response-type'] == 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('clientUpdated', clientUpdated))
+                return res
+                    .status(200)
+                    .send(js2xmlparser.parse('clientUpdated', clientUpdated))
             }
         } catch (error) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(500).json({ error })
+                return res.status(500).json({ error })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('error', error))
+                return res.status(500).send(js2xmlparser.parse('error', error))
             }
         }
     }
@@ -369,20 +388,22 @@ export default class ClientController {
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(200).json({ clientDeleted })
+                return res.status(200).json({ clientDeleted })
             } else if (req.headers['response-type'] == 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('clientDeleted', clientDeleted))
+                return res
+                    .status(200)
+                    .send(js2xmlparser.parse('clientDeleted', clientDeleted))
             }
         } catch (error) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(500).json({ error })
+                return res.status(500).json({ error })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('error', error))
+                return res.status(500).send(js2xmlparser.parse('error', error))
             }
         }
     }

@@ -5,7 +5,7 @@ import Employee from '../models/Employee.js'
 import Product from '../models/Product.js'
 import Sale from '../models/Sale.js'
 
-export default class ProductController {
+export default class SaleController {
     static async createSale(req, res) {
         const {
             paymentmethod,
@@ -112,7 +112,6 @@ export default class ProductController {
             }
             return true
         }
-        console.log(typeof(await allProductsExists()))
         if (!(await allProductsExists())) {
             if (
                 req.headers['response-type'] === 'json' ||
@@ -143,20 +142,20 @@ export default class ProductController {
                     req.headers['response-type'] === 'json' ||
                     req.headers['response-type'] === undefined
                 ) {
-                    res.status(200).json({ sale })
+                    return res.status(200).json({ sale })
                 } else if (req.headers['response-type'] == 'xml') {
                     res.header('Content-Type', 'application/xml')
-                    res.send(js2xmlparser.parse('sale', sale))
+                    return res.status(200).send(js2xmlparser.parse('sale', sale))
                 }
             } catch (error) {
                 if (
                     req.headers['response-type'] === 'json' ||
                     req.headers['response-type'] === undefined
                 ) {
-                    res.status(500).json({ error })
+                    return res.status(500).json({ error })
                 } else if (req.headers['response-type'] === 'xml') {
                     res.header('Content-Type', 'application/xml')
-                    res.send(js2xmlparser.parse('error', error))
+                    return res.status(500).send(js2xmlparser.parse('error', error))
                 }
             }
         }
@@ -171,20 +170,20 @@ export default class ProductController {
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(200).json({ sales })
+                return res.status(200).json({ sales })
             } else if (req.headers['response-type'] == 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('sales', sales))
+                return res.status(200).send(js2xmlparser.parse('sales', sales))
             }
         } catch (error) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(500).json({ error })
+                return res.status(500).json({ error })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('error', error))
+                return res.status(500).send(js2xmlparser.parse('error', error))
             }
         }
     }
@@ -196,24 +195,41 @@ export default class ProductController {
                 include: [Client, Employee, Product],
                 raw: true
             })
+            if (!sale) {
+                if (
+                    req.headers['response-type'] === 'json' ||
+                    req.headers['response-type'] === undefined
+                ) {
+                    return res.status(422).json({
+                        message: 'Venda não encontrada!'
+                    })
+                } else if (req.headers['response-type'] === 'xml') {
+                    res.header('Content-Type', 'application/xml')
+                    return res.status(422).send(
+                        js2xmlparser.parse('Error', {
+                            message: 'Venda não encontrada!'
+                        })
+                    )
+                }
+            }
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(200).json({ sale })
+                return res.status(200).json({ sale })
             } else if (req.headers['response-type'] == 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('sale', sale))
+                return res.status(200).send(js2xmlparser.parse('sale', sale))
             }
         } catch (error) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(500).json({ error })
+                return res.status(500).json({ error })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('error', error))
+                return res.status(500).send(js2xmlparser.parse('error', error))
             }
         }
     }
@@ -226,7 +242,7 @@ export default class ProductController {
                 ClientId: req.body.clientid,
                 employeeId: req.body.employeeid
             }
-            const seila = await Sale.update(sale, { where: { id: id } })
+            const saleUpdated = await Sale.update(sale, { where: { id: id } })
             const saleWasUpdated = await Sale.findOne({
                 where: { id: id },
                 include: [Client, Employee, Product]
@@ -240,20 +256,22 @@ export default class ProductController {
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(200).json({ seila })
+                return res.status(200).json({ saleUpdated })
             } else if (req.headers['response-type'] == 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('saleUpdated', seila))
+                return res
+                    .status(200)
+                    .send(js2xmlparser.parse('saleUpdated', saleUpdated))
             }
         } catch (error) {
             if (
                 req.headers['response-type'] === 'json' ||
                 req.headers['response-type'] === undefined
             ) {
-                res.status(500).json({ error })
+                return res.status(500).json({ error })
             } else if (req.headers['response-type'] === 'xml') {
                 res.header('Content-Type', 'application/xml')
-                res.send(js2xmlparser.parse('error', error))
+                return res.status(500).send(js2xmlparser.parse('error', error))
             }
         }
     }

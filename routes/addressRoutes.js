@@ -1,12 +1,12 @@
 import { Router } from 'express'
-import AddressControler from '../controllers/AddressControler.js'
+import AddressController from '../controllers/AddressController.js'
 
 const addressRoutes = Router()
 
-addressRoutes.post('/create', AddressControler.createAddress)
-addressRoutes.get('/', AddressControler.getAllAddress)
-addressRoutes.get('/:id', AddressControler.getAddress)
-addressRoutes.patch('/', AddressControler.updateAddress)
-addressRoutes.delete('/', AddressControler.deleteAddress)
+addressRoutes.post('/create', AddressController.createAddress)
+addressRoutes.get('/', AddressController.getAllAddress)
+addressRoutes.get('/:id', AddressController.getAddress)
+addressRoutes.patch('/', AddressController.updateAddress)
+addressRoutes.delete('/', AddressController.deleteAddress)
 
 export default addressRoutes
